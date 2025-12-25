@@ -8,7 +8,30 @@ A Docker container setup for running Claude Code agents in a sandboxed environme
 - Anthropic API key ([get one here](https://console.anthropic.com/))
 - GitHub Personal Access Token ([create one here](https://github.com/settings/tokens))
 
-## Setup
+## Quick Start
+
+**Interactive setup (recommended):**
+```bash
+./setup.sh
+```
+
+The setup script will:
+- Prompt you for your Anthropic API key
+- Prompt you for your GitHub Personal Access Token
+- Create a `.env` file with your credentials
+- Build the Docker container
+
+**Then use the helper scripts:**
+```bash
+./start.sh    # Start the container
+./shell.sh    # Enter the container shell
+./stop.sh     # Stop the container
+./logs.sh     # View container logs
+```
+
+## Manual Setup
+
+If you prefer manual setup:
 
 1. **Copy the environment template:**
    ```bash
@@ -31,49 +54,48 @@ A Docker container setup for running Claude Code agents in a sandboxed environme
 
 ## Usage
 
-### Start the container
+### Quick Commands (Helper Scripts)
 
+```bash
+./start.sh    # Start the container in background
+./shell.sh    # Enter the container shell
+./stop.sh     # Stop the container
+./logs.sh     # View container logs
+```
+
+### Manual Commands
+
+Start the container:
 ```bash
 docker-compose up -d
 ```
 
-### Enter the container
-
+Enter the container:
 ```bash
 docker-compose exec claude-code bash
 ```
 
-Or attach to the running container:
-
+Stop the container:
 ```bash
-docker attach claude-code-sandbox
+docker-compose down
 ```
 
-### Clone a repository inside the container
+### Inside the Container
 
-Once inside the container:
-
+Clone a repository:
 ```bash
 git clone https://github.com/your-username/your-repo.git
 cd your-repo
 ```
 
-### Run Claude Code
-
+Run Claude Code:
 ```bash
 claude-code
 ```
 
 Or run a specific command:
-
 ```bash
 claude-code "fix the bug in src/main.js"
-```
-
-### Stop the container
-
-```bash
-docker-compose down
 ```
 
 ## Directory Structure
@@ -83,9 +105,16 @@ docker-compose down
 ├── Dockerfile              # Container definition
 ├── docker-compose.yml      # Docker Compose configuration
 ├── docker-entrypoint.sh    # Startup script for credential setup
+├── setup.sh                # Interactive setup script
+├── start.sh                # Start container helper
+├── stop.sh                 # Stop container helper
+├── shell.sh                # Enter container shell helper
+├── logs.sh                 # View logs helper
 ├── .env                    # Your credentials (gitignored)
 ├── .env.example            # Template for credentials
 ├── workspace/              # Persistent workspace (created on first run)
+├── LICENSE                 # MIT License
+├── CONTRIBUTING.md         # Contributing guidelines
 └── README.md              # This file
 ```
 
