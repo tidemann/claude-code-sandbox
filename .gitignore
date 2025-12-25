@@ -1,0 +1,8 @@
+# Environment variables with secrets
+.env
+
+# Workspace directory
+workspace/
+
+# Docker volumes
+.docker/

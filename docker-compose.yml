@@ -1,0 +1,20 @@
+services:
+  claude-code:
+    build: .
+    container_name: claude-code-sandbox
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - GITHUB_PAT=${GITHUB_PAT}
+      - GITHUB_USERNAME=${GITHUB_USERNAME:-git}
+      - GIT_USER_NAME=${GIT_USER_NAME:-Claude Code Agent}
+      - GIT_USER_EMAIL=${GIT_USER_EMAIL:-claude-code@example.com}
+    volumes:
+      # Mount workspace directory to persist work
+      - ./workspace:/workspace
+      # Optional: mount specific repos
+      # - /path/to/your/repo:/workspace/repo
+    working_dir: /workspace
+    stdin_open: true
+    tty: true
+    # Keep container running
+    command: /bin/bash
