@@ -10,6 +10,8 @@ A Docker container setup for running Claude Code agents in a sandboxed environme
 
 ## Quick Start
 
+### Linux/macOS
+
 **Interactive setup (recommended):**
 ```bash
 ./setup.sh
@@ -27,6 +29,27 @@ The setup script will:
 ./shell.sh    # Enter the container shell
 ./stop.sh     # Stop the container
 ./logs.sh     # View container logs
+```
+
+### Windows (PowerShell)
+
+**Interactive setup (recommended):**
+```powershell
+.\setup.ps1
+```
+
+The setup script will:
+- Prompt you for your Anthropic API key
+- Prompt you for your GitHub Personal Access Token
+- Create a `.env` file with your credentials
+- Build the Docker container
+
+**Then use the helper scripts:**
+```powershell
+.\start.ps1    # Start the container
+.\shell.ps1    # Enter the container shell
+.\stop.ps1     # Stop the container
+.\logs.ps1     # View container logs
 ```
 
 ## Manual Setup
@@ -57,11 +80,20 @@ If you prefer manual setup:
 
 ### Quick Commands (Helper Scripts)
 
+**Linux/macOS:**
 ```bash
 ./start.sh    # Start the container in background
 ./shell.sh    # Enter the container shell
 ./stop.sh     # Stop the container
 ./logs.sh     # View container logs
+```
+
+**Windows (PowerShell):**
+```powershell
+.\start.ps1    # Start the container in background
+.\shell.ps1    # Enter the container shell
+.\stop.ps1     # Stop the container
+.\logs.ps1     # View container logs
 ```
 
 ### Manual Commands
@@ -112,7 +144,7 @@ REPO_URL=https://github.com/username/repo.git
 - If the repo already exists, it will be skipped (no re-cloning)
 - The repository will be ready to use immediately when you enter the shell
 
-**Example workflow:**
+**Example workflow (Linux/macOS):**
 ```bash
 # In .env
 REPO_URL=https://github.com/username/my-project.git
@@ -128,6 +160,22 @@ cd my-project
 claude-code "implement feature X"
 ```
 
+**Example workflow (Windows):**
+```powershell
+# In .env
+REPO_URL=https://github.com/username/my-project.git
+
+# Start container
+.\start.ps1
+
+# Enter shell - repo is already cloned!
+.\shell.ps1
+
+# Inside container
+cd my-project
+claude-code "implement feature X"
+```
+
 ## Directory Structure
 
 ```
@@ -135,11 +183,16 @@ claude-code "implement feature X"
 ├── Dockerfile              # Container definition
 ├── docker-compose.yml      # Docker Compose configuration
 ├── docker-entrypoint.sh    # Startup script for credential setup
-├── setup.sh                # Interactive setup script
-├── start.sh                # Start container helper
-├── stop.sh                 # Stop container helper
-├── shell.sh                # Enter container shell helper
-├── logs.sh                 # View logs helper
+├── setup.sh                # Interactive setup script (Linux/macOS)
+├── setup.ps1               # Interactive setup script (Windows)
+├── start.sh                # Start container helper (Linux/macOS)
+├── start.ps1               # Start container helper (Windows)
+├── stop.sh                 # Stop container helper (Linux/macOS)
+├── stop.ps1                # Stop container helper (Windows)
+├── shell.sh                # Enter container shell helper (Linux/macOS)
+├── shell.ps1               # Enter container shell helper (Windows)
+├── logs.sh                 # View logs helper (Linux/macOS)
+├── logs.ps1                # View logs helper (Windows)
 ├── .env                    # Your credentials (gitignored)
 ├── .env.example            # Template for credentials
 ├── workspace/              # Persistent workspace (created on first run)
