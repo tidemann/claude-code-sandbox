@@ -51,6 +51,12 @@ if [ ! -f .env ]; then
     GIT_USER_EMAIL=${GIT_USER_EMAIL:-claude-code@example.com}
     echo ""
 
+    # Optional: Repository URL for auto-clone
+    echo "Auto-clone repository (optional):"
+    echo "Enter a GitHub repository URL to automatically clone on container startup"
+    read -p "Repository URL (optional, press Enter to skip): " REPO_URL
+    echo ""
+
     # Write to .env file
     cat > .env << EOF
 # Anthropic API Key (required for Claude Code)
@@ -65,6 +71,10 @@ GITHUB_USERNAME=${GITHUB_USERNAME}
 # Git configuration (optional)
 GIT_USER_NAME=${GIT_USER_NAME}
 GIT_USER_EMAIL=${GIT_USER_EMAIL}
+
+# Auto-clone repository (optional)
+# If set, this repository will be automatically cloned to /workspace on container startup
+REPO_URL=${REPO_URL}
 EOF
 
     echo "✓ Created .env file with your credentials"

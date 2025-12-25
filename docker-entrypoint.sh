@@ -29,5 +29,36 @@ else
     echo "Warning: ANTHROPIC_API_KEY not set. Claude Code will not work without it."
 fi
 
+# Auto-clone repository if REPO_URL is provided
+if [ -n "$REPO_URL" ]; then
+    echo "Auto-clone enabled for: $REPO_URL"
+
+    # Extract repository name from URL (e.g., https://github.com/user/repo.git -> repo)
+    REPO_NAME=$(basename "$REPO_URL" .git)
+    REPO_PATH="/workspace/$REPO_NAME"
+
+    if [ -d "$REPO_PATH" ]; then
+        echo "Repository '$REPO_NAME' already exists at $REPO_PATH"
+
+        # Optionally pull latest changes
+        if [ "$AUTO_PULL" = "true" ]; then
+            echo "Pulling latest changes..."
+            cd "$REPO_PATH"
+            git pull || echo "Warning: Failed to pull latest changes"
+            cd /workspace
+        fi
+    else
+        echo "Cloning repository to $REPO_PATH..."
+        if git clone "$REPO_URL" "$REPO_PATH"; then
+            echo "✓ Repository cloned successfully!"
+            echo "Navigate to it with: cd $REPO_PATH"
+        else
+            echo "✗ Failed to clone repository. Check your REPO_URL and credentials."
+        fi
+    fi
+else
+    echo "No REPO_URL configured. Clone repositories manually with 'git clone'."
+fi
+
 # Execute the main command
 exec "$@"

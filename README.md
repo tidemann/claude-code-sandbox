@@ -46,6 +46,7 @@ If you prefer manual setup:
    - `GITHUB_USERNAME`: Your GitHub username (optional)
    - `GIT_USER_NAME`: Your name for git commits (optional)
    - `GIT_USER_EMAIL`: Your email for git commits (optional)
+   - `REPO_URL`: GitHub repository URL to auto-clone on startup (optional)
 
 3. **Build the container:**
    ```bash
@@ -96,6 +97,35 @@ claude-code
 Or run a specific command:
 ```bash
 claude-code "fix the bug in src/main.js"
+```
+
+## Auto-Clone Feature
+
+You can configure a repository to be automatically cloned when the container starts by setting `REPO_URL` in your `.env` file:
+
+```bash
+REPO_URL=https://github.com/username/repo.git
+```
+
+**How it works:**
+- On container startup, if `REPO_URL` is set, the repo will be automatically cloned to `/workspace/<repo-name>`
+- If the repo already exists, it will be skipped (no re-cloning)
+- The repository will be ready to use immediately when you enter the shell
+
+**Example workflow:**
+```bash
+# In .env
+REPO_URL=https://github.com/username/my-project.git
+
+# Start container
+./start.sh
+
+# Enter shell - repo is already cloned!
+./shell.sh
+
+# Inside container
+cd my-project
+claude-code "implement feature X"
 ```
 
 ## Directory Structure
