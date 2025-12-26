@@ -63,7 +63,7 @@ while ($true) {
     # Start Claude in background
     $claudeJob = Start-Job -ScriptBlock {
         param($repoPath, $containerName)
-        docker exec -i -w $repoPath $containerName bash -c 'DOCKER_GID=$(stat -c "%g" /var/run/docker.sock 2>/dev/null || echo ""); if [ -n "$DOCKER_GID" ]; then sg $DOCKER_GID -c "claude --dangerously-skip-permissions /continue-work"; else claude --dangerously-skip-permissions /continue-work; fi'
+        docker exec -i -w $repoPath $containerName bash -c 'DOCKER_GID=$(stat -c "%g" /var/run/docker.sock 2>/dev/null || echo ""); if [ -n "$DOCKER_GID" ] && [ "$DOCKER_GID" != "0" ]; then sg $DOCKER_GID -c "claude --dangerously-skip-permissions /continue-work"; else claude --dangerously-skip-permissions /continue-work; fi'
     } -ArgumentList $repoPath, "claude-code-sandbox"
 
     # Monitor activity

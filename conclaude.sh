@@ -34,8 +34,8 @@ TASK="$*"
 
 if [ -n "$TASK" ]; then
     echo "Launching Claude Code in $REPO_PATH with task: $TASK"
-    docker exec -it -w "$REPO_PATH" claude-code-sandbox bash -c 'DOCKER_GID=$(stat -c "%g" /var/run/docker.sock 2>/dev/null || echo ""); if [ -n "$DOCKER_GID" ]; then sg $DOCKER_GID -c "claude --dangerously-skip-permissions '"$TASK"'"; else claude --dangerously-skip-permissions "'"$TASK"'"; fi'
+    docker exec -it -w "$REPO_PATH" claude-code-sandbox bash -c 'DOCKER_GID=$(stat -c "%g" /var/run/docker.sock 2>/dev/null || echo ""); if [ -n "$DOCKER_GID" ] && [ "$DOCKER_GID" != "0" ]; then sg $DOCKER_GID -c "claude --dangerously-skip-permissions '"$TASK"'"; else claude --dangerously-skip-permissions "'"$TASK"'"; fi'
 else
     echo "Launching Claude Code in interactive mode at $REPO_PATH"
-    docker exec -it -w "$REPO_PATH" claude-code-sandbox bash -c 'DOCKER_GID=$(stat -c "%g" /var/run/docker.sock 2>/dev/null || echo ""); if [ -n "$DOCKER_GID" ]; then sg $DOCKER_GID -c "claude --dangerously-skip-permissions"; else claude --dangerously-skip-permissions; fi'
+    docker exec -it -w "$REPO_PATH" claude-code-sandbox bash -c 'DOCKER_GID=$(stat -c "%g" /var/run/docker.sock 2>/dev/null || echo ""); if [ -n "$DOCKER_GID" ] && [ "$DOCKER_GID" != "0" ]; then sg $DOCKER_GID -c "claude --dangerously-skip-permissions"; else claude --dangerously-skip-permissions; fi'
 fi

@@ -26,17 +26,24 @@ if [ -e /var/run/docker.sock ]; then
     # Get the GID of the docker socket on the host
     DOCKER_SOCK_GID=$(stat -c '%g' /var/run/docker.sock)
 
-    # Check if a group with this GID already exists
-    if ! getent group $DOCKER_SOCK_GID > /dev/null 2>&1; then
-        # Create a new group with the same GID as the docker socket
-        sudo groupadd -g $DOCKER_SOCK_GID docker-host
+    if [ "$DOCKER_SOCK_GID" = "0" ]; then
+        # Socket is owned by root - make it accessible to all users
+        sudo chmod 666 /var/run/docker.sock 2>/dev/null || true
+        echo "✓ Docker socket access configured (root-owned, permissions updated)"
+    else
+        # Socket has a non-root group - add user to that group
+        # Check if a group with this GID already exists
+        if ! getent group $DOCKER_SOCK_GID > /dev/null 2>&1; then
+            # Create a new group with the same GID as the docker socket
+            sudo groupadd -g $DOCKER_SOCK_GID docker-host
+        fi
+
+        # Add the current user to the group with the socket's GID
+        sudo usermod -aG $DOCKER_SOCK_GID $(whoami)
+
+        echo "✓ Docker socket access configured (GID: $DOCKER_SOCK_GID)"
+        echo "  Note: You may need to run 'newgrp $DOCKER_SOCK_GID' or restart your shell"
     fi
-
-    # Add the current user to the group with the socket's GID
-    sudo usermod -aG $DOCKER_SOCK_GID $(whoami)
-
-    echo "✓ Docker socket access configured (GID: $DOCKER_SOCK_GID)"
-    echo "  Note: You may need to run 'newgrp $DOCKER_SOCK_GID' or restart your shell"
 else
     echo "⚠ Warning: Docker socket not found at /var/run/docker.sock"
     echo "  Docker commands will not work inside this container."
