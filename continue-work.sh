@@ -72,7 +72,8 @@ while true; do
     echo ""
 
     # Start Claude in background
-    docker exec -i -w "$REPO_PATH" claude-code-sandbox bash -c 'DOCKER_GID=$(stat -c "%g" /var/run/docker.sock 2>/dev/null || echo ""); if [ -n "$DOCKER_GID" ] && [ "$DOCKER_GID" != "0" ]; then sg $DOCKER_GID -c "claude --dangerously-skip-permissions /continue-work"; else claude --dangerously-skip-permissions /continue-work; fi' &
+    # Keep stdin open with tail -f /dev/null
+    docker exec -i -w "$REPO_PATH" claude-code-sandbox bash -c 'tail -f /dev/null | { DOCKER_GID=$(stat -c "%g" /var/run/docker.sock 2>/dev/null || echo ""); if [ -n "$DOCKER_GID" ] && [ "$DOCKER_GID" != "0" ]; then sg $DOCKER_GID -c "claude --dangerously-skip-permissions /continue-work"; else claude --dangerously-skip-permissions /continue-work; fi; }' &
     CLAUDE_PID=$!
 
     # Monitor activity
