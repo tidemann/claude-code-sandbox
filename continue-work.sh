@@ -72,8 +72,9 @@ while true; do
     echo ""
 
     # Start Claude in background
-    # Run Claude with /continue-work slash command in interactive mode
-    docker exec -i -w "$REPO_PATH" claude-code-sandbox bash -c 'DOCKER_GID=$(stat -c "%g" /var/run/docker.sock 2>/dev/null || echo ""); if [ -n "$DOCKER_GID" ] && [ "$DOCKER_GID" != "0" ]; then sg $DOCKER_GID -c "echo '\''/continue-work'\'' | claude --dangerously-skip-permissions"; else echo '\''/continue-work'\'' | claude --dangerously-skip-permissions; fi' &
+    # Run Claude with continue-work prompt directly (slash commands don't work via piped stdin)
+    PROMPT="Execute autonomous development workflow from .claude/commands/continue-work.md: Query GitHub issues (gh issue list --label mvp-blocker --state open), pick top priority, implement solution, test, create PR with 'Closes #N', merge when CI passes, then IMMEDIATELY continue to next issue WITHOUT asking. Loop until all issues resolved or genuine blocker hit."
+    docker exec -i -w "$REPO_PATH" claude-code-sandbox bash -c "DOCKER_GID=\$(stat -c '%g' /var/run/docker.sock 2>/dev/null || echo ''); if [ -n \"\$DOCKER_GID\" ] && [ \"\$DOCKER_GID\" != '0' ]; then sg \$DOCKER_GID -c 'claude --dangerously-skip-permissions -p \"$PROMPT\"'; else claude --dangerously-skip-permissions -p '$PROMPT'; fi" &
     CLAUDE_PID=$!
 
     # Monitor activity
