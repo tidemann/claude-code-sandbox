@@ -5,6 +5,12 @@ $ErrorActionPreference = "Stop"
 
 Write-Host "Starting Claude Code Sandbox..." -ForegroundColor Cyan
 
+# Ensure claude-credentials directory exists
+if (-not (Test-Path "claude-credentials")) {
+    Write-Host "Creating claude-credentials directory..." -ForegroundColor Yellow
+    New-Item -ItemType Directory -Path "claude-credentials" | Out-Null
+}
+
 # Check if .env exists
 if (-not (Test-Path .env)) {
     Write-Host "[ERROR] .env file not found" -ForegroundColor Red

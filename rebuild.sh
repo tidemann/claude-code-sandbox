@@ -9,6 +9,13 @@ echo "Claude Code Sandbox - Rebuild"
 echo "======================================"
 echo ""
 
+# Check if credentials exist and inform user
+if [ -f "claude-credentials/.credentials.json" ]; then
+    echo "INFO: Claude credentials found - they will be preserved"
+    echo "      Your authentication should persist after rebuild"
+    echo ""
+fi
+
 # Check if container is running
 if docker ps -q -f name=claude-code-sandbox > /dev/null 2>&1; then
     echo "Stopping running container..."

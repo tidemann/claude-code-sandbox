@@ -8,6 +8,13 @@ Write-Host "Claude Code Sandbox - Rebuild" -ForegroundColor Cyan
 Write-Host "======================================" -ForegroundColor Cyan
 Write-Host ""
 
+# Check if credentials exist and warn user
+if (Test-Path "claude-credentials\.credentials.json") {
+    Write-Host "INFO: Claude credentials found - they will be preserved" -ForegroundColor Green
+    Write-Host "      Your authentication should persist after rebuild" -ForegroundColor Green
+    Write-Host ""
+}
+
 # Check if container is running
 $running = docker ps -q -f name=claude-code-sandbox 2>$null
 

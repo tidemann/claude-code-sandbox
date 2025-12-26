@@ -362,11 +362,29 @@ The container includes Docker CLI and has access to the host Docker daemon via s
 **Subscription Mode:**
 - Run `claude login` inside the container
 - Your credentials will be saved to `./claude-credentials/` on the host
-- Credentials persist across container restarts
-- If you're asked to re-authenticate every time:
+- Credentials **should** persist across container restarts and rebuilds
+- If you're asked to re-authenticate after rebuild:
+  - This may happen if Claude CLI version changes during rebuild
+  - The credentials files (`.credentials.json`) are preserved but may need revalidation
+  - If rebuilding frequently, consider using API Key mode instead
+- If you're asked to re-authenticate every restart:
   - Check that `./claude-credentials/` directory exists on the host
   - Verify the volume mount in docker-compose.yml: `./claude-credentials:/home/node/.claude`
   - Check permissions: the directory should be readable/writable
+  - Verify `.credentials.json` file exists in `./claude-credentials/`
+
+### Credentials after rebuild
+
+When you rebuild the container with `./rebuild.ps1` or `./rebuild.sh`:
+- Your credentials in `./claude-credentials/` are **preserved** (they're stored on the host)
+- However, you may still need to re-authenticate if:
+  - Claude CLI version changed during rebuild (due to fresh install)
+  - Credentials format changed between versions
+  - Session tokens expired
+- To minimize this:
+  - Use API Key mode (`CLAUDE_AUTH_MODE=api-key`) which doesn't require re-authentication
+  - Only rebuild when necessary (Dockerfile changes)
+  - Use `./stop.ps1` and `./start.ps1` for routine restarts instead of rebuild
 
 ### Permission errors
 
