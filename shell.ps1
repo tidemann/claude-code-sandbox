@@ -17,5 +17,5 @@ Write-Host "Entering Claude Code Sandbox shell..." -ForegroundColor Cyan
 Write-Host "Type 'exit' to leave the container" -ForegroundColor Yellow
 Write-Host ""
 
-# Enter the container
-docker-compose exec claude-code bash
+# Enter the container with docker group access
+docker-compose exec claude-code bash -c 'DOCKER_GID=$(stat -c "%g" /var/run/docker.sock 2>/dev/null || echo ""); if [ -n "$DOCKER_GID" ]; then exec sg $DOCKER_GID bash; else exec bash; fi'

@@ -26,11 +26,36 @@ if (-not (Test-Path .env)) {
     Write-Host "Creating .env file..." -ForegroundColor Cyan
     Write-Host ""
 
-    # Prompt for Anthropic API Key
-    Write-Host "Enter your Anthropic API Key:"
-    Write-Host "(Get one at: https://console.anthropic.com/)" -ForegroundColor Gray
-    $ANTHROPIC_API_KEY = Read-Host "ANTHROPIC_API_KEY"
+    # Prompt for authentication mode
+    Write-Host "======================================" -ForegroundColor Cyan
+    Write-Host "Claude Code Authentication Mode" -ForegroundColor Cyan
+    Write-Host "======================================" -ForegroundColor Cyan
     Write-Host ""
+    Write-Host "Choose how you want to authenticate Claude Code:" -ForegroundColor Yellow
+    Write-Host "  1. API Key (console.anthropic.com account with API credits)" -ForegroundColor White
+    Write-Host "  2. Subscription (claude.ai Pro or subscription plan)" -ForegroundColor White
+    Write-Host ""
+
+    $authChoice = ""
+    while ($authChoice -notmatch "^[12]$") {
+        $authChoice = Read-Host "Enter your choice (1 or 2)"
+    }
+    Write-Host ""
+
+    if ($authChoice -eq "1") {
+        $CLAUDE_AUTH_MODE = "api-key"
+        # Prompt for Anthropic API Key
+        Write-Host "Enter your Anthropic API Key:"
+        Write-Host "(Get one at: https://console.anthropic.com/)" -ForegroundColor Gray
+        $ANTHROPIC_API_KEY = Read-Host "ANTHROPIC_API_KEY"
+        Write-Host ""
+    } else {
+        $CLAUDE_AUTH_MODE = "max-plan"
+        $ANTHROPIC_API_KEY = ""
+        Write-Host "Subscription mode selected." -ForegroundColor Green
+        Write-Host "You will authenticate inside the container with 'claude login'" -ForegroundColor Gray
+        Write-Host ""
+    }
 
     # Prompt for GitHub PAT
     Write-Host "Enter your GitHub Personal Access Token:"
@@ -69,7 +94,11 @@ if (-not (Test-Path .env)) {
 
     # Write to .env file
     $envContent = @"
-# Anthropic API Key (required for Claude Code)
+# Claude Code Authentication Mode
+# Options: api-key | max-plan
+CLAUDE_AUTH_MODE=$CLAUDE_AUTH_MODE
+
+# Anthropic API Key (required only if CLAUDE_AUTH_MODE=api-key)
 ANTHROPIC_API_KEY=$ANTHROPIC_API_KEY
 
 # GitHub Personal Access Token (required for GitHub operations)
@@ -94,9 +123,19 @@ REPO_URL=$REPO_URL
 
 # Validate required fields
 $envFileContent = Get-Content .env -Raw
-if ($envFileContent -notmatch "ANTHROPIC_API_KEY=.+") {
-    Write-Host "[ERROR] ANTHROPIC_API_KEY is not set in .env" -ForegroundColor Red
-    exit 1
+
+# Check authentication mode
+$authMode = "api-key"
+if ($envFileContent -match "CLAUDE_AUTH_MODE=(.+)") {
+    $authMode = $matches[1].Trim()
+}
+
+# Only validate API key if using api-key mode
+if ($authMode -eq "api-key") {
+    if ($envFileContent -notmatch "ANTHROPIC_API_KEY=.+") {
+        Write-Host "[ERROR] ANTHROPIC_API_KEY is not set in .env (required for api-key mode)" -ForegroundColor Red
+        exit 1
+    }
 }
 
 if ($envFileContent -notmatch "GITHUB_PAT=.+") {

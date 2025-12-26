@@ -3,16 +3,24 @@ services:
     build: .
     container_name: claude-code-sandbox
     environment:
+      - CLAUDE_AUTH_MODE=${CLAUDE_AUTH_MODE:-api-key}
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
       - GITHUB_PAT=${GITHUB_PAT}
+      - GH_TOKEN=${GITHUB_PAT}
       - GITHUB_USERNAME=${GITHUB_USERNAME:-git}
       - GIT_USER_NAME=${GIT_USER_NAME:-Claude Code Agent}
       - GIT_USER_EMAIL=${GIT_USER_EMAIL:-claude-code@example.com}
+      - REPO_URL=${REPO_URL}
     volumes:
       # Mount workspace directory to persist work
       - ./workspace:/workspace
+      # Persist Claude Code credentials (for subscription authentication)
+      - ./claude-credentials:/home/node/.claude
+      # Mount Docker socket for Docker-in-Docker support
+      - /var/run/docker.sock:/var/run/docker.sock
       # Optional: mount specific repos
       # - /path/to/your/repo:/workspace/repo
+    user: "1000:1000"  # Run as node user (UID:GID)
     working_dir: /workspace
     stdin_open: true
     tty: true

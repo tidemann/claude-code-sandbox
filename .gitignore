@@ -4,5 +4,11 @@
 # Workspace directory
 workspace/
 
+# Claude Code credentials (contains authentication tokens)
+claude-credentials/
+
+# Claude Code nested settings (when Claude runs inside this repo)
+.claude/.claude/
+
 # Docker volumes
 .docker/
