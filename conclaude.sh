@@ -30,7 +30,7 @@ if ! docker ps -q -f name=claude-code-sandbox | grep -q .; then
         docker rm -f claude-code-sandbox > /dev/null 2>&1
     fi
     echo "Starting container..."
-    docker-compose up -d
+    docker compose up -d
     sleep 2
 fi
 
