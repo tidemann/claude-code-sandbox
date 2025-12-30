@@ -31,6 +31,12 @@ $repoPath = "/workspace/$repoName"
 $running = docker ps -q -f name=claude-code-sandbox 2>$null
 
 if (-not $running) {
+    # Remove any stopped/stale container first
+    $exists = docker ps -aq -f name=claude-code-sandbox 2>$null
+    if ($exists) {
+        Write-Host "Removing stale container..." -ForegroundColor Yellow
+        docker rm -f claude-code-sandbox 2>$null
+    }
     Write-Host "Starting container..." -ForegroundColor Yellow
     docker-compose up -d
     Start-Sleep -Seconds 2

@@ -23,7 +23,12 @@ REPO_NAME=$(basename "$REPO_URL" .git)
 REPO_PATH="/workspace/$REPO_NAME"
 
 # Check if container is running
-if ! docker ps -q -f name=claude-code-sandbox > /dev/null 2>&1; then
+if ! docker ps -q -f name=claude-code-sandbox | grep -q .; then
+    # Remove any stopped/stale container first
+    if docker ps -aq -f name=claude-code-sandbox | grep -q .; then
+        echo "Removing stale container..."
+        docker rm -f claude-code-sandbox > /dev/null 2>&1
+    fi
     echo "Starting container..."
     docker-compose up -d
     sleep 2
