@@ -93,7 +93,7 @@ if ! grep -q "GITHUB_PAT=..*" .env; then
 fi
 
 echo "Building Docker container..."
-docker-compose build
+docker compose build
 
 if [ $? -eq 0 ]; then
     echo ""
@@ -104,9 +104,9 @@ if [ $? -eq 0 ]; then
     echo "  ./shell.sh              # Enter the container shell"
     echo "  ./stop.sh               # Stop the container"
     echo ""
-    echo "Or use docker-compose directly:"
-    echo "  docker-compose up -d    # Start in background"
-    echo "  docker-compose exec claude-code bash"
+    echo "Or use docker compose directly:"
+    echo "  docker compose up -d    # Start in background"
+    echo "  docker compose exec claude-code bash"
     echo ""
 else
     echo ""

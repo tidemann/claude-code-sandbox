@@ -20,7 +20,7 @@ if docker ps | grep -q claude-code-sandbox; then
 fi
 
 # Start the container
-docker-compose up -d
+docker compose up -d
 
 # Wait for container to be ready
 echo "Waiting for container to start..."
@@ -43,6 +43,6 @@ if docker ps | grep -q claude-code-sandbox; then
     echo "  claude-code"
 else
     echo "✗ Failed to start container"
-    echo "Check logs with: docker-compose logs"
+    echo "Check logs with: docker compose logs"
     exit 1
 fi

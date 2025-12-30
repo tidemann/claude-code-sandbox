@@ -38,7 +38,7 @@ REPO_PATH="/workspace/$REPO_NAME"
 # Check if container is running
 if ! docker ps -q -f name=claude-code-sandbox > /dev/null 2>&1; then
     echo "Starting container..."
-    docker-compose up -d
+    docker compose up -d
     sleep 3
 fi
 

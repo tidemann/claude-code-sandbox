@@ -19,7 +19,7 @@ fi
 # Check if container is running
 if docker ps -q -f name=claude-code-sandbox > /dev/null 2>&1; then
     echo "Stopping running container..."
-    docker-compose down
+    docker compose down
     echo ""
 fi
 
@@ -27,7 +27,7 @@ echo "Rebuilding Docker container (no cache)..."
 echo "This may take a few minutes..."
 echo ""
 
-docker-compose build --no-cache
+docker compose build --no-cache
 
 echo ""
 echo "[OK] Rebuild complete!"

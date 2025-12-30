@@ -10,7 +10,7 @@ if ! docker ps | grep -q claude-code-sandbox; then
 fi
 
 # Stop the container
-docker-compose down
+docker compose down
 
 echo "✓ Container stopped successfully"
 echo ""
